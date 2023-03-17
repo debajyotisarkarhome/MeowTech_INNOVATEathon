@@ -126,4 +126,69 @@ def scalar_and_pca(df):
 record()
 scalar_and_pca(extract_features("RECORDS"))
 model = pickle.load(open('mlp.model','rb'))
-print(model.predict(scalar_and_pca(extract_features("RECORDS"))))
+output = model.predict(scalar_and_pca(extract_features("RECORDS")))
+
+'''----------------------output--------------------------'''
+
+labelmap = {
+ 'male_angry':0,
+ 'female_surprised':1,
+ 'male_neutral':2,
+ 'male_surprised':3,
+ 'male_calm':4,
+ 'female_happy':5,
+ 'male_disgust':6,
+ 'female_fearful':7,
+ 'male_sad':8,
+ 'female_neutral':9,
+ 'female_angry':10,
+ 'female_calm':11,
+ 'female_sad':12,
+ 'male_fearful':13,
+ 'male_happy':14,
+ 'female_disgust':15,
+}
+
+song_names = {
+	'angry' : ['Dream on', 'Believer', 'Demons'],
+	'surprised' : ['Y dis kolaberi', 'heart stereo', 'montero'],
+	'neutral' : ['Pasoori', 'Adaat', 'Those eyes'],
+	'calm' : ['Boba Tunnel', 'Tu Jane Naa', 'Dusk till Dawn'],
+	'sad' : ['Bekhayali', 'Channa Mereya', 'Sun raha hai na tu'],
+	'happy' : ['Aaj din Shaynara', 'Mera mann', 'Die for you'],
+	'disguist' : ['Tumpa', 'Tunir Maa', 'Subway Sexist'],
+	'fearful' : ["Lullaby Of Woe", 'Goodbye', "Something in the way"]
+}
+
+book_names = {
+	'angry': ["Mindful Anger: A Pathway to Emotional Freedom", "Ikigai"],
+	'calm' : ['Bhagawad Geeta', 'Siddhartha'],
+	'surprised' : ['The Alchemist', 'The Girl with a Dragon Book'],
+	'happy' : ['Happiness project', 'Book of Joy'],
+	'sad' : ['The Bell Jar', 'Reasons to stay alive'],
+	'disguist' : ["American Psycho", "The Girl Next Door"],
+	'neutral' : ["The Nightangle", "Born a Crime"],
+	'fearful' : ["Gift of Fear", "The Haunting of Hill House"]
+}
+
+obtained = [list(labelmap)[o] for o in output]
+
+# print(obtained)
+
+# obtained = ['female_angry', 'female_sad', 'male_angry', 'male_angry', 'male_disguist', 'female_calm']
+
+sex = []
+emotion = []
+
+for x in obtained:
+	s, e = x.split('_')
+	sex.append(s)
+	emotion.append(e)
+
+print("Predictions of Highest Probability:")
+
+print("\tsex: ", max(sex,key=sex.count))
+print("\tEmotion: ", max(emotion,key=emotion.count))
+
+print("\tReccomended Songs: ", *song_names[max(emotion,key=emotion.count)], sep="\n\t\t")
+print("\tReccomended Books: ", *book_names[max(emotion,key=emotion.count)], sep="\n\t\t")
