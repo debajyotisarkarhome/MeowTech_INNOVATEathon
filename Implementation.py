@@ -12,14 +12,18 @@ import pickle
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
+from sklearnex import patch_sklearn
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 import numpy as np
 from sklearn.metrics import confusion_matrix, accuracy_score,f1_score
 import pickle
-import xgboost as xgb
+#import xgboost as xgb
 
+patch_sklearn()
+
+DEBUG=1
 
 sample_rate = 22050
 RECORD_SECONDS = 5
@@ -127,6 +131,8 @@ record()
 scalar_and_pca(extract_features("RECORDS"))
 model = pickle.load(open('mlp.model','rb'))
 output = model.predict(scalar_and_pca(extract_features("RECORDS")))
+if DEBUG==1:
+    print(output)
 
 '''----------------------output--------------------------'''
 
@@ -156,7 +162,7 @@ song_names = {
 	'calm' : ['Boba Tunnel', 'Tu Jane Naa', 'Dusk till Dawn'],
 	'sad' : ['Bekhayali', 'Channa Mereya', 'Sun raha hai na tu'],
 	'happy' : ['Aaj din Shaynara', 'Mera mann', 'Die for you'],
-	'disguist' : ['Tumpa', 'Tunir Maa', 'Subway Sexist'],
+	'disgust' : ['Tumpa', 'Tunir Maa', 'Subway Sexist'],
 	'fearful' : ["Lullaby Of Woe", 'Goodbye', "Something in the way"]
 }
 
@@ -166,12 +172,12 @@ book_names = {
 	'surprised' : ['The Alchemist', 'The Girl with a Dragon Book'],
 	'happy' : ['Happiness project', 'Book of Joy'],
 	'sad' : ['The Bell Jar', 'Reasons to stay alive'],
-	'disguist' : ["American Psycho", "The Girl Next Door"],
+	'disgust' : ["American Psycho", "The Girl Next Door"],
 	'neutral' : ["The Nightangle", "Born a Crime"],
 	'fearful' : ["Gift of Fear", "The Haunting of Hill House"]
 }
 
-obtained = [list(labelmap)[o] for o in output]
+obtained = [list(labelmap)[int(o)] for (o) in output]
 
 # print(obtained)
 
